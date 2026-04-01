@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { Teko, Noto_Sans } from "next/font/google";
 import "./globals.css";
 
-const instrumentSerif = Instrument_Serif({
+const tekoFont = Teko({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "600"],
   variable: "--font-display",
   display: "swap",
 });
 
-const dmSans = DM_Sans({
+const notoSans = Noto_Sans({
   subsets: ["latin"],
+  weight: ["400", "700"],
   variable: "--font-body",
   display: "swap",
 });
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${instrumentSerif.variable} ${dmSans.variable} antialiased`}
+      className={`${tekoFont.variable} ${notoSans.variable}`}
     >
       <body>{children}</body>
     </html>
