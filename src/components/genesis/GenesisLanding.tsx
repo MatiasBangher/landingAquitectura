@@ -77,6 +77,7 @@ export function GenesisLanding() {
   const layoutRef = useRef({ cw: 0, ch: 0, dpr: 1 });
 
   const [loadPct, setLoadPct] = useState(0);
+  const [navOpen, setNavOpen] = useState(false);
 
   // ── Draw ────────────────────────────────────────────────────────────────
   const drawFrame = useCallback((index: number) => {
@@ -145,6 +146,28 @@ export function GenesisLanding() {
     window.addEventListener("resize", resizeCanvas);
     return () => window.removeEventListener("resize", resizeCanvas);
   }, [resizeCanvas]);
+
+  // Menú móvil: cerrar con Escape, bloquear scroll y al pasar a escritorio
+  useEffect(() => {
+    if (!navOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setNavOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [navOpen]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 681px)");
+    const onChange = () => setNavOpen(false);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   // ── Main effect ─────────────────────────────────────────────────────────
   useEffect(() => {
@@ -384,13 +407,59 @@ export function GenesisLanding() {
 
       {/* Fixed header */}
       <header className="site-header">
-        <a href="#" className="site-logo">Génesis Arq</a>
-        <nav className="site-nav" aria-label="Principal">
+        <a
+          href="#"
+          className="site-logo"
+          onClick={() => setNavOpen(false)}
+        >
+          Génesis Arq
+        </a>
+        <nav className="site-nav site-nav--desktop" aria-label="Principal">
           <a href="#servicios">Servicios</a>
           <a href="#proyectos">Proyectos</a>
           <a href="#estudio">Estudio</a>
           <a href="#contacto">Contacto</a>
         </nav>
+        <div
+          id="site-nav-drawer"
+          className={`site-nav-drawer ${navOpen ? "is-open" : ""}`}
+          aria-hidden={!navOpen}
+        >
+          <div
+            className="site-nav-drawer__backdrop"
+            aria-hidden="true"
+            onClick={() => setNavOpen(false)}
+          />
+          <nav
+            className="site-nav site-nav--drawer"
+            aria-label="Principal"
+            onClick={(e) => {
+              if ((e.target as HTMLElement).closest("a")) setNavOpen(false);
+            }}
+          >
+            <a href="#servicios">Servicios</a>
+            <a href="#proyectos">Proyectos</a>
+            <a href="#estudio">Estudio</a>
+            <a href="#contacto">Contacto</a>
+          </nav>
+        </div>
+        <button
+          type="button"
+          id="site-nav-toggle"
+          className={`site-nav-toggle ${navOpen ? "is-open" : ""}`}
+          aria-expanded={navOpen}
+          aria-controls="site-nav-drawer"
+          aria-label={
+            navOpen ? "Cerrar menú de navegación" : "Abrir menú de navegación"
+          }
+          onClick={() => setNavOpen((o) => !o)}
+        >
+          <span className="site-nav-toggle__bars" aria-hidden="true">
+            <span className="site-nav-toggle__bar" />
+            <span className="site-nav-toggle__bar" />
+            <span className="site-nav-toggle__bar" />
+          </span>
+        </button>
       </header>
 
       {/* Canvas — fixed, visible desde frame 1, sin clip-path */}

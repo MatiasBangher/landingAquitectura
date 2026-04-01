@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
@@ -19,6 +19,13 @@ export const metadata: Metadata = {
   title: "Génesis Arq — Estudio de Arquitectura",
   description:
     "Estudio de arquitectura en Buenos Aires. Espacios habitables, luz medida y materia honesta.",
+};
+
+/** Safe areas (notch / home indicator) para padding en CSS con env() */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
